@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-rds-app
+  labels:
+    app: flask-rds-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-rds-app
+  template:
+    metadata:
+      labels:
+        app: flask-rds-app
+    spec:
+      containers:
+      - name: flask-rds-app
+        image: dhruvalsharma59/pythonapp:v2
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+        env:
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: flask-db-secret
+              key: DB_HOST
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: flask-db-secret
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: flask-db-secret
+              key: DB_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: flask-db-secret
+              key: DB_NAME
+
